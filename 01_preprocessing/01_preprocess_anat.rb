@@ -7,30 +7,23 @@
 #  Created by Zarrar Shehzad on 2012-09-24.
 # 
 
-# allows adding color to output
-require 'colorize'
+# add lib directory to ruby path
+$: << File.join(File.dirname(__FILE__), "/../lib")
 
-# Light wrapper around system
-# prints command and any error messages if command fails
-def run(command, error_message=nil)
-  # print command
-  l = command.split
-  print l[0].light_blue.underline, l[1..-1].light_green, '\n'
-  # execute command
-  retval = system "time #{command}"
-  # show error message
-  if not retval:
-    puts error_message.light_red if not error_message.nil?
-    raise "command: #{command} failed"
-  return retval
+require 'colorize'        # allows adding color to output
+require 'for_commands.rb' # provides 'run' function
+
+
+# Usage
+if ARGV.length == 0
+  puts "usage: #{$0} subject1 subject2 ... subjectN".light_blue
+  exit 1
 end
 
-# Method to remove file extension including '.tar.gz' or '.nii.gz'
-class String
-  def rmext
-    File.basename(self.chomp('.gz'), '.*')
-  end
-end
+# Gather scans by subjects and runs to process
+subjects  = ARGV
+runs      = 1..2
+
 
 # Set Paths
 # => note: prefix of 't_' is for string variables that have element(s) requiring 
@@ -53,16 +46,6 @@ t_out_head      = "#{t_out_anatdir}/anat/head.nii.gz"
 t_out_brain     = "#{t_out_anatdir}/anat/brain.nii.gz"
 
 
-# Usage
-if ARGV.length == 0
-  puts "usage: #{$0} subject1 subject2 ... subjectN".light_blue
-  exit 1
-end
-
-# Gather scans by subjects and runs to process
-subjects  = ARGV
-runs      = 1..2
-
 # Loop through each subject
 subjects.each do |subject|
   puts "= Subject: #{subject} ".white.on_blue
@@ -70,6 +53,10 @@ subjects.each do |subject|
   svars = {:subject => subject}
   out_subdir  = t_out_subdir % svars
   out_anatdir = t_out_anatdir % svars
+  out_head    = t_out_head % svars
+  out_brain   = t_out_brain % svars
+  
+  next if output_exists(out_head) and output_exists(out_brain)
   
   Dir.mkdir out_subdir  if not File.directory? out_subdir
   Dir.mkdir out_anatdir if not File.directory? out_anatdir
@@ -83,6 +70,8 @@ subjects.each do |subject|
     deoblique   = "#{out_rundir}/deoblique.nii.gz"
     reorient    = t_out_runhead % rvars
     skullstrip  = t_out_runbrain % rvars
+    
+    next if input_doesnt_exist(in_t1)
     
     Dir.mkdir out_rundir if not File.directory? out_rundir
     
