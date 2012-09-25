@@ -1,3 +1,6 @@
+#####
+# Python
+
 *.py[co]
 
 # Packages
@@ -25,3 +28,35 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+
+#####
+# Ruby Files
+
+*.gem
+*.rbc
+.bundle
+.config
+coverage
+InstalledFiles
+lib/bundler/man
+pkg
+rdoc
+spec/reports
+test/tmp
+test/version_tmp
+tmp
+
+# YARD artifacts
+.yardoc
+_yardoc
+doc/
+
+
+#####
+# OS X temporary files that should never be committed
+
+.DS_Store
+*.swp
+*.lock
+profile
