@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8" />
+  
+  <!-- Set the viewport width to device width for mobile -->
+  <meta name="viewport" content="width=device-width" />
+
+  <title><%= @title %></title>
+  
+  <!-- Included CSS Files (Compressed) -->
+  <link rel="stylesheet" href="<%= @foundation %>/stylesheets/foundation.min.css">
+  <link rel="stylesheet" href="<%= @foundation %>/stylesheets/app.css">
+
+  <script src="<%= @foundation %>/javascripts/modernizr.foundation.js"></script>
+
+  <!-- IE Fix for HTML5 Tags -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+</head>
+<body style="padding-top: 50px">
+  
+  <!-- Navigation Area -->
+  <div class="row">
+    <div class="twelve columns">
+      <nav class="top-bar fixed contain-to-grid">
+          <ul>
+            <!-- Title Area -->
+            <li class="name">
+              <h1>
+                <a href="#">
+                  <%= @nav_title %>
+                </a>
+              </h1>
+            </li>
+            <li class="toggle-topbar"><a href="#"></a></li>
+          </ul>
+          <section>
+            <!-- Right Nav Section -->
+            <ul class="right">
+              <li class="divider show-for-medium-and-up"></li>
+              <li class="has-dropdown">
+                <a href="#"><%= @dropdown_title %></a>
+                <ul class="dropdown">
+                  <% @dropdown_elems.each do |elem| %>
+                    <li><a href="#<%= elem %>"><%= elem %></a></li>
+                  <% end %>
+                </ul>
+              </li>
+            </ul>
+          </section>
+      </nav>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="two columns">
+      <h4><%= @dropdown_title %></h4>
+      <dl class="nice vertical tabs hide-on-phones">
+        <% @dropdown_elems.each do |elem| %>
+          <dd><a href="#<%= elem %>"><%= elem %></a></dd>
+        <% end %>
+      </dl>
+    </div>
+    
+    <div class="ten columns">
+      <%= @body %>
+    </div>
+  </div>
+  
+  <!-- Javascript Calls -->
+  <script type="text/javascript" charset="utf-8">
+    $(document).foundationTopBar();
+  </script>
+  
+  <!-- Included JS Files (Compressed) -->
+  <script src="<%= @foundation %>/javascripts/jquery.js"></script>
+  <script src="<%= @foundation %>/javascripts/foundation.min.js"></script>
+  <script src="<%= @foundation %>/javascripts/jquery.foundation.topbar.js"></script>
+  
+  <!-- Initialize JS Plugins -->
+  <script src="<%= @foundation %>/javascripts/app.js"></script>
+</body>
+</html>
