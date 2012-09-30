@@ -20,7 +20,6 @@ $: << SCRIPTDIR + "lib" # will be scriptdir/lib
 require 'colorize'        # allows adding color to output
 require 'for_commands.rb' # provides various function such as 'run'
 require 'erb'             # for interpreting erb to create report pages
-require 'kramdown'        # for interpreting markdown to create report pages
 
 # Usage
 if ARGV.length == 0
@@ -33,9 +32,7 @@ subjects  = ARGV
 runs      = 1..2
 
 
-# Set Paths
-# => note: prefix of 't_' is for string variables that have element(s) requiring 
-# =>       subtitution/interpolation.
+# Set paths
 ## general
 ENV['BASEDIR']  ||= "/home/data/Projects/emotional-bs"
 basedir           = ENV['BASEDIR']
@@ -43,15 +40,6 @@ qadir             = "#{basedir}/00_QA"
 origdir           = "#{basedir}/01_Originals"
 preprocdir        = "#{basedir}/02_PreProcessed"
 freesurferdir     = "#{basedir}/02_Freesurfer"
-## inputs
-t_in_subdir       = "#{origdir}/%{subject}"
-t_original        = "#{t_in_subdir}/anat%{run}/mprage.nii.gz"
-## outputs        
-t_out_subdir      = "#{preprocdir}/%{subject}"
-t_anatdir         = "#{t_out_subdir}/anat"
-t_head            = "#{t_anatdir}/head.nii.gz"
-t_brain           = "#{t_anatdir}/brain.nii.gz"
-t_brain_mask      = "#{t_anatdir}/brain_mask.nii.gz"
 ## html output    
 layout_file       = SCRIPTDIR + "etc/layout.html.erb"
 body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.md.erb"
@@ -62,34 +50,39 @@ exit 2 if any_inputs_dont_exist_including qadir, origdir, preprocdir, freesurfer
 
 # Loop through each subject
 subjects.each do |subject|
-  puts "= Subject: #{subject} \n".white.on_blue
+  puts "\n= Subject: #{subject} \n".white.on_blue
   
-  in_subdir       = t_in_subdir % {:subject => subject}
-  originals       = runs.collect{|run| t_original % {:subject => subject, :run => run}}
+  puts "\n== Setting input variables".magenta
+  in_subdir       = "#{origdir}/#{subject}"
+  originals       = runs.collect{|run| "#{in_subdir}/anat#{run}/mprage.nii.gz"}
   fixed_originals = originals.collect{|orig| "#{orig.rmext}_tmpfix.nii.gz" }
   
-  svars = {:subject => subject}
-  out_subdir  = t_out_subdir % svars
-  anatdir     = t_anatdir % svars
-  mridir      = "#{freesurferdir}/#{subject}/mri"
-  head        = t_head % svars
-  brain       = t_brain % svars
-  brain_mask  = t_brain_mask % svars
-  head_pic                = "#{head.rmext}_axial_pic.png"
+  puts "\n== Checking inputs".magenta
+  next if any_inputs_dont_exist_including freesurferdir, *originals
+  
+  puts "\n== Setting output variables".magenta
+  out_subdir      = "#{preprocdir}/#{subject}"
+  mridir          = "#{freesurferdir}/#{subject}/mri"
+  anatdir         = "#{out_subdir}/anat"
+  head            = "#{anatdir}/head.nii.gz"
+  brain           = "#{anatdir}/brain.nii.gz"
+  brain_mask      = "#{anatdir}/brain_mask.nii.gz"  
+  head_axial_pic          = "#{head.rmext}_axial_pic.png"
+  head_sagittal_pic       = "#{head.rmext}_sagittal_pic.png"
   brain_mask_axial_pic    = "#{brain_mask.rmext}_axial_pic.png"
   brain_mask_sagittal_pic = "#{brain_mask.rmext}_sagittal_pic.png"
   
-  puts "\n== Updating report page".magenta
-  text      = File.open(body_file).read
-  erbified  = ERB.new(text).result(binding)
-  markified = Kramdown::Document.new(erbified).to_html
-  @body    += "\n #{markified} \n"
-  
-  next if any_inputs_dont_exist_including freesurferdir, *originals
+  puts "\n== Checking outputs".magenta
   next if all_outputs_exist_including head, brain, brain_mask
-  
+      
+  puts "\n== Creating output directories (if needed)"
   Dir.mkdir out_subdir if not File.directory? out_subdir
   Dir.mkdir anatdir if not File.directory? anatdir
+  
+  puts "\n== Saving contents for report page".magenta
+  text      = File.open(body_file).read
+  erbified  = ERB.new(text).result(binding)
+  @body    += "\n #{erbified} \n"
   
   begin
     
@@ -118,14 +111,15 @@ subjects.each do |subject|
     puts "\n== Generating brain mask".magenta
     run "3dcalc -a #{brain} -expr 'step(a)' -prefix #{brain_mask}"
     
-    puts "\n== Creating pretty pictures".magenta    
-    run "slicer.py -w 4 -l 3 -s axial #{head} #{head_pic}"
-    run "slicer.py -w 4 -l 3 -s axial --overlay #{brain_mask} 1 1 -t #{head} #{brain_mask_axial_pic}"
-    run "slicer.py -w 4 -l 3 -s sagittal --overlay #{brain_mask} 1 1 -t #{head} #{brain_mask_sagittal_pic}"
+    puts "\n== Creating pretty pictures".magenta
+    run "slicer.py -w 5 -l 4 -s axial #{head} #{head_axial_pic}"
+    run "slicer.py -w 5 -l 4 -s sagittal #{head} #{head_sagittal_pic}"
+    run "slicer.py -w 5 -l 4 -s axial --overlay #{brain_mask} 1 1 -t #{head} #{brain_mask_axial_pic}"
+    run "slicer.py -w 5 -l 4 -s sagittal --overlay #{brain_mask} 1 1 -t #{head} #{brain_mask_sagittal_pic}"
         
   ensure
     
-    puts "\n== Removing intermediate files"
+    puts "\n== Removing intermediate files".magenta
     run "rm -f %s #{anatdir}/tmp_*.nii.gz" % fixed_originals.join(" ")
     
   end
@@ -144,4 +138,3 @@ text      = File.open(layout_file).read
 erbified  = ERB.new(text).result(binding)
 File.open(report_file, 'w') { |file| file.write(erbified) }
 
-puts ""
