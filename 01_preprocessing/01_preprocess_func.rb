@@ -20,16 +20,24 @@ $: << SCRIPTDIR + "lib" # will be scriptdir/lib
 require 'colorize'        # allows adding color to output
 require 'for_commands.rb' # provides various function such as 'run'
 require 'erb'             # for interpreting erb to create report pages
+require 'trollop'
 
-# Usage
-if ARGV.length == 0
-  puts "usage: #{$0} subject1 subject2 ... subjectN".light_blue
-  exit 1
+# Process command-line inputs
+p = Trollop::Parser.new do
+  banner "Usage: #{File.basename($0)} -n scan -r 1 ... N -s sub1 ... subN\n"
+  opt :name, "Name of scan (movie or rest)", :type => :string, :required => true
+  opt :runs, "Which runs to process", :type => :ints, :required => true
+  opt :subjects, "Which subjects to process", :type => :strings, :required => true
+end
+opts = Trollop::with_standard_exception_handling p do
+  raise Trollop::HelpNeeded if ARGV.empty? # show help screen
+  p.parse ARGV
 end
 
-# Gather scans by subjects and runs to process
-subjects  = ARGV
-runs      = 1..3
+# Gather inputs
+scan        = opts[:name]
+runs        = opts[:runs]
+subjects    = opts[:subjects]
 
 # Set Paths
 ## general
@@ -66,16 +74,16 @@ subjects.each do |subject|
     puts "\n== Run #{run}"
     
     puts "\n=== Setting input variables".magenta
-    in_rundir           = "#{in_subdir}/movie#{run}"
+    in_rundir           = "#{in_subdir}/#{scan}#{run}"
     original            = "#{in_rundir}/func.nii.gz"
     
     puts "\n== Checking inputs".magenta
     next if any_inputs_dont_exist_including original    
     
     puts "\n=== Setting output variables".magenta
-    out_rundir          = "#{out_subdir}/movie/run_%02d" % run
+    out_rundir          = "#{out_subdir}/#{scan}/run_%02d" % run
     ppdir               = "#{out_rundir}/01_preprocess"
-    mcref               = "#{out_subdir}/movie/run_01/func_ref.nii.gz"  # same across runs
+    mcref               = "#{out_subdir}/#{scan}/run_01/func_ref.nii.gz"  # same across runs
     motion              = "#{out_rundir}/motion.1D"
     brain_mask          = "#{out_rundir}/func_mask.nii.gz"
     brain_axial_pic     = "#{out_rundir}/func_brain_mask_axial.png"

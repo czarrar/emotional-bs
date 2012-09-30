@@ -21,15 +21,22 @@ require 'colorize'        # allows adding color to output
 require 'for_commands.rb' # provides various function such as 'run'
 require 'erb'             # for interpreting erb to create report pages
 require 'reg_help.rb'     # provides 'create_reg_pics' function
+require 'trollop'
 
-# Usage
-if ARGV.length == 0
-  puts "usage: #{$0} subject1 subject2 ... subjectN".light_blue
-  exit 1
+# Process command-line inputs
+p = Trollop::Parser.new do
+  banner "Usage: #{File.basename($0)} (-r 2) -s sub1 ... subN\n"
+  opt :resolution, "Resolution in mm to use for standard brain", :type => :int, :default => 2
+  opt :subjects, "Which subjects to process", :type => :strings, :required => true
+end
+opts = Trollop::with_standard_exception_handling p do
+  raise Trollop::HelpNeeded if ARGV.empty? # show help screen
+  p.parse ARGV
 end
 
-# Gather scans by subjects and runs to process
-subjects  = ARGV
+# Gather inputs
+resolution  = opts[:resolution]
+subjects    = opts[:subjects]
 
 # Set Paths
 ## general
@@ -52,7 +59,7 @@ subjects.each do |subject|
   anatdir       = "#{preprocdir}/#{subject}/anat"
   
   puts "\n== Setting input variables".magenta
-  standard      = ENV['FSLDIR'] + "/data/standard/MNI152_T1_2mm_brain.nii.gz"
+  standard      = "#{ENV['FSLDIR']}/data/standard/MNI152_T1_#{resolution}mm_brain.nii.gz"
   brain         = "#{anatdir}/brain.nii.gz"
   gm            = "#{anatdir}/segment/fast_pve_1.nii.gz"
   
@@ -83,6 +90,9 @@ subjects.each do |subject|
     puts "\n=== Creating pretty pictures".magenta
     create_reg_pics "#{regprefix}.nii.gz", standard, "#{regprefix}_flirt.png"
     
+    puts "\n== Invert transform to get Standard => T1"
+    run "convert_xfm -omat #{regdir}/standard2highres.mat -inverse #{regprefix}.mat"
+    
     puts "\n== Non-linear registration T1 Head => Standard".magenta
     run "fnirt \
           --in=#{head} \
@@ -99,6 +109,9 @@ subjects.each do |subject|
     
     puts "\n=== Creating pretty pictures".magenta
     create_reg_pics "#{regprefix}.nii.gz", standard, "#{regprefix}_flirt.png"
+    
+    puts "\n== Linking standard brain".magenta
+    run "ln -s #{standard} #{regdir}/standard.nii.gz"
     
     puts "\n== Applying transform GM => Standard".magenta
     run "applywarp \
