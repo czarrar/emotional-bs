@@ -7,12 +7,16 @@
 #  Created by Zarrar Shehzad on 2012-09-24.
 # 
 
+require 'pathname'
+SCRIPTDIR   = Pathname.new(__FILE__).realpath.dirname.dirname
+SCRIPTNAME  = Pathname.new(__FILE__).basename.sub_ext("")
+
 # add lib directory to ruby path
-$: << File.join(File.dirname(__FILE__), "/../lib")
+$: << SCRIPTDIR + "lib" # will be scriptdir/lib
 
 require 'colorize'        # allows adding color to output
-require 'for_commands.rb' # provides 'run' function
-
+require 'for_commands.rb' # provides various function such as 'run'
+require 'erb'             # for interpreting erb to create report pages
 
 # Usage
 if ARGV.length == 0
@@ -25,54 +29,52 @@ subjects    = ARGV
 csf_thresh  = 0.5
 wm_thresh   = 0.5
 
-
-# Set Paths
-# => note: prefix of 't_' is for string variables that have element(s) requiring 
-# =>       subtitution/interpolation.
-## general
+# Set paths
 basedir     = "/home/data/Projects/emotional-bs"
 preprocdir  = "#{basedir}/02_PreProcessed"
-t_subdir    = "#{preprocdir}/%{subject}"
-t_anatdir   = "#{t_subdir}/anat"
-## inputs
-t_in_brain  = "#{t_anatdir}/brain.nii.gz"
-## outputs
-t_csf_mask  = "#{t_anatdir}/csf_mask.nii.gz"
-t_wm_mask   = "#{t_anatdir}/wm_mask.nii.gz"
-t_wm_edge   = "#{t_anatdir}/wm_mask_edge.nii.gz"
-
 
 # Loop through each subject
 subjects.each do |subject|
-  puts "= Subject: #{subject} \n".white.on_blue
+  puts "\n= Subject: #{subject} \n".white.on_blue
   
-  svars = {:subject => subject}
-  in_brain  = t_in_brain % svars
-  fast      = "#{t_anatdir}/segment/fast" % svars
-  csf_mask  = t_csf_mask % svars
-  wm_mask   = t_wm_mask % svars
-  wm_edge   = t_wm_edge % svars
+  anatdir   = "#{preprocdir}/#{subject}/anat"
+  
+  puts "\n== Setting input variables".magenta
+  brain     = "#{anatdir}/anat"
+  
+  puts "\n== Checking inputs".magenta
+  next if any_inputs_dont_exist_including brain
+  
+  puts "\n== Setting output variables".magenta
+  fast      = "#{anatdir}/segment/fast"
+  csf_mask  = "#{anatdir}/csf_mask.nii.gz"
+  wm_mask   = "#{anatdir}/wm_mask.nii.gz"
+  wm_edge   = "#{anatdir}/wm_mask_edge.nii.gz"
+    
+  puts "\n== Checking outputs".magenta
+  next if all_outputs_exist_including csf_mask, wm_mask, wm_edge
   
   begin
   
-    puts "== Segmenting skullstripped anatomical".magenta
-    run "fast --channels=1 --type=1 --class=3 --out=#{fast} #{in_brain}"
+    puts "\n== Segmenting skullstripped anatomical".magenta
+    run "fast --channels=1 --type=1 --class=3 --out=#{fast} #{brain}"
     
-    puts "== Thresholding CSF mask".magenta
+    puts "\n== Thresholding CSF mask".magenta
     run "3dcalc -a #{fast}_pve_0.nii.gz -expr 'step(a-%.4f)' \
           -prefix #{csf_mask} -datum short" % csf_thresh
     
-    puts "== Thresholding WM mask".magenta
+    puts "\n== Thresholding WM mask".magenta
     run "3dcalc -a #{fast}_pve_2.nii.gz -expr 'step(a-%.4f)' \
           -prefix #{wm_mask} -datum short" % wm_thresh
     
-    puts "== Find edges of WM for evaluating segmentation and bbreg results"
+    puts "\n== Find edges of WM for evaluating segmentation and bbreg results".magenta
     run "fslmaths #{wm_mask} -edge -bin -mas #{wm_mask} #{wm_edge}"
     
   ensure
     
-    puts "\n== Removing intermediate files"
-    run "rm -f %s*" % [fast]
+    puts "\n== doing good".magenta
+    #puts "\n== Removing intermediate files".magenta
+    #run "rm -f #{fast}*"
     
   end
   
