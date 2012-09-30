@@ -55,12 +55,18 @@ subjects.each do |subject|
   standard      = ENV['FSLDIR'] + "/data/standard/MNI152_T1_2mm_brain.nii.gz"
   brain         = "#{anatdir}/brain.nii.gz"
   gm            = "#{anatdir}/segment/fast_pve_1.nii.gz"
-    
+  
+  puts "\n== Checking inputs".magenta
+  next if any_inputs_dont_exist_including standard, brain
+  
   puts "\n== Setting output variables".magenta
   regdir        = "#{anatdir}/reg"
   regprefix     = "#{regdir}/highres2standard"
   gm2std        = "#{regdir}/gm2standard.nii.gz"
   gm2std_smooth = "#{gm2std.rmext}_smooth.nii.gz"
+  
+  puts "\n== Checking outputs".magenta
+  next if all_outputs_exist_including regprefix, gm2std, gm2std_smooth
   
   puts "\n== Creating output directories (if needed)"
   Dir.mkdir regdir if not File.directory? regdir
