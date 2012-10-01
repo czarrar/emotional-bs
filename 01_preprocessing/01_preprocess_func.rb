@@ -17,8 +17,9 @@ SCRIPTNAME  = Pathname.new(__FILE__).basename.sub_ext("")
 # add lib directory to ruby path
 $: << SCRIPTDIR + "lib" # will be scriptdir/lib
 
-require 'colorize'        # allows adding color to output
+require 'config.rb'       # globalish variables
 require 'for_commands.rb' # provides various function such as 'run'
+require 'colorize'        # allows adding color to output
 require 'erb'             # for interpreting erb to create report pages
 require 'trollop'
 
@@ -38,21 +39,6 @@ end
 scan        = opts[:name]
 runs        = opts[:runs]
 subjects    = opts[:subjects]
-
-# Set Paths
-## general
-ENV['BASEDIR']  ||= "/home/data/Projects/emotional-bs"
-basedir           = ENV['BASEDIR']
-qadir             = "#{basedir}/00_QA"
-origdir           = "#{basedir}/01_Originals"
-preprocdir        = "#{basedir}/02_PreProcessed"
-## html output    
-layout_file       = SCRIPTDIR + "etc/layout.html.erb"
-body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.md.erb"
-report_file       = "#{qadir}/02_PreProcessed_#{SCRIPTNAME}.html"
-@body             = ""
-
-exit 2 if any_inputs_dont_exist_including qadir, origdir, preprocdir
 
 # Loop through each subject
 subjects.each do |subject|
@@ -85,6 +71,8 @@ subjects.each do |subject|
     ppdir               = "#{out_rundir}/01_preprocess"
     mcref               = "#{out_subdir}/#{scan}/run_01/func_ref.nii.gz"  # same across runs
     motion              = "#{out_rundir}/motion.1D"
+    abs_motion          = "#{out_rundir}/motion_absolute.1D"
+    rel_motion          = "#{out_rundir}/motion_relative.1D"
     brain_mask          = "#{out_rundir}/func_mask.nii.gz"
     brain_axial_pic     = "#{out_rundir}/func_brain_mask_axial.png"
     brain_sagittal_pic  = "#{out_rundir}/func_brain_mask_sagittal.png"
@@ -103,7 +91,7 @@ subjects.each do |subject|
           -prefix #{ppdir}/01_exclude_tpts.nii.gz"
     
     puts "\n=== Performing slice time correction".magenta
-    run "3dTshift -TR Xs -slice X -tpattern X \
+    run "3dTshift -TR #{TR} -slice #{nslices} -tpattern #{slice_pattern} \
           -prefix #{ppdir}/02_slice_time.nii.gz"
     
     puts "\n=== Deobliquing to be AFNI friendly".magenta
@@ -124,6 +112,16 @@ subjects.each do |subject|
     puts "=== using the 1st image of run #1 as the reference".magenta
     run "3dvolreg -Fourier -prefix #{ppdir}/05_motion_correct.nii.gz \
           -base #{mcref} -1Dfile #{motion} #{ppdir}/04_reorient.nii.gz"
+    
+    puts "\n=== Calculating absolute and relative motion".magenta
+    run "1d_tool.py -infile #{motion} -collapse_cols euclidean_norm \
+          -overwrite -write #{abs_motion}"
+    run "1d_tool.py -infile #{motion} -collapse_cols euclidean_norm \
+          -derivative -overwrite -write #{rel_motion}"
+    
+    puts "\n=== Making pretty picture of motion".magenta
+    run "fsl_tsplot -i #{abs_motion},#{rel_motion} -o #{motion_pic} \
+          -t 'Estimated displacement (mm)' -a abs,rel"
     
     puts "\n=== Generating brain mask".magenta
     run "3dAutomask -dilate 1 -prefix #{brain_mask} #{ppdir}/05_motion_correct.nii.gz"
