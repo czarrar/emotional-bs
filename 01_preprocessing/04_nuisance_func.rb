@@ -17,8 +17,9 @@ SCRIPTNAME  = Pathname.new(__FILE__).basename.sub_ext("")
 # add lib directory to ruby path
 $: << SCRIPTDIR + "lib" # will be scriptdir/lib
 
-require 'colorize'        # allows adding color to output
+require 'config.rb'       # globalish variables
 require 'for_commands.rb' # provides various function such as 'run'
+require 'colorize'        # allows adding color to output
 require 'erb'             # for interpreting erb to create report pages
 require 'reg_help.rb'     # provides 'create_reg_pics' function
 require 'trollop'         # command-line option parser
@@ -29,7 +30,12 @@ p = Trollop::Parser.new do
   opt :name, "Name of scan (movie or rest)", :type => :string, :required => true
   opt :runs, "Which runs to process", :type => :ints, :required => true
   opt :subjects, "Which subjects to process", :type => :strings, :required => true
-  opt :resolution, "Resolution in mm to use for standard brain", :type => :int, :default => 2
+  opt :low_band, "Low end of band-pass filter", :type => :float, 
+    :default => 0
+  opt :high_band, "High end of band-pass filter", :type => :float, :default => 999
+  opt :fwhm, "FWHM for spatial smoothing", :type => :int, :default => 6
+  opt :wm_radius, "Radius for detecting WM voxels when doing anaticor", 
+    :type => :int, :default => 30
 end
 opts = Trollop::with_standard_exception_handling p do
   raise Trollop::HelpNeeded if ARGV.empty? # show help screen
@@ -43,21 +49,7 @@ subjects    = opts[:subjects]
 low_bad     = opts[:low_band]
 high_band   = opts[:high_band]
 fwhm        = opts[:fwhm]
-wm_radius   = opts[:wm_radius] # 30
-
-# Set Paths
-## general
-ENV['BASEDIR']  ||= "/home/data/Projects/emotional-bs"
-basedir           = ENV['BASEDIR']
-qadir             = "#{basedir}/00_QA"
-preprocdir        = "#{basedir}/02_PreProcessed"
-## html output    
-layout_file       = SCRIPTDIR + "etc/layout.html.erb"
-body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.md.erb"
-report_file       = "#{qadir}/02_PreProcessed_#{SCRIPTNAME}.html"
-@body             = ""
-
-exit 2 if any_inputs_dont_exist_including qadir, preprocdir
+wm_radius   = opts[:wm_radius]
 
 subjects.each do |subject|
   puts "\n= Subject #{subject}".white.on_blue
@@ -75,7 +67,7 @@ subjects.each do |subject|
       
   puts "\n== Checking inputs".magenta
   next if any_inputs_dont_exist_including csf_mask, wm_mask, func_mean, 
-                                          func_mask, highres2func
+                                          func_mask, "#{highres2func}.mat"
     
   puts "\n== Setting output variables".magenta
   segdir        = "#{funcdir}/segment"
@@ -128,6 +120,7 @@ subjects.each do |subject|
     puts "\n== Run #{run}".white.on_blue
     
     puts "\n=== Setting input variables".magenta
+    rundir          = "#{funcdir}/run_%02d" % run
     func            = "#{rundir}/func_brain.nii.gz"
     motion          = "#{rundir}/motion.1D"
     

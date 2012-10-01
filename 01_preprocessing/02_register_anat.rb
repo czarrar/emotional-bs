@@ -17,8 +17,9 @@ SCRIPTNAME  = Pathname.new(__FILE__).basename.sub_ext("")
 # add lib directory to ruby path
 $: << SCRIPTDIR + "lib" # will be scriptdir/lib
 
-require 'colorize'        # allows adding color to output
+require 'config.rb'       # globalish variables
 require 'for_commands.rb' # provides various function such as 'run'
+require 'colorize'        # allows adding color to output
 require 'erb'             # for interpreting erb to create report pages
 require 'reg_help.rb'     # provides 'create_reg_pics' function
 require 'trollop'
@@ -26,8 +27,10 @@ require 'trollop'
 # Process command-line inputs
 p = Trollop::Parser.new do
   banner "Usage: #{File.basename($0)} (-r 2) -s sub1 ... subN\n"
-  opt :resolution, "Resolution in mm to use for standard brain", :type => :int, :default => 2
-  opt :subjects, "Which subjects to process", :type => :strings, :required => true
+  opt :resolution, "Resolution in mm to use for standard brain", 
+    :type => :int, :default => 2
+  opt :subjects, "Which subjects to process", 
+    :type => :strings, :required => true
 end
 opts = Trollop::with_standard_exception_handling p do
   raise Trollop::HelpNeeded if ARGV.empty? # show help screen
@@ -38,19 +41,7 @@ end
 resolution  = opts[:resolution]
 subjects    = opts[:subjects]
 
-# Set Paths
-## general
-ENV['BASEDIR']  ||= "/home/data/Projects/emotional-bs"
-basedir           = ENV['BASEDIR']
-qadir             = "#{basedir}/00_QA"
-preprocdir        = "#{basedir}/02_PreProcessed"
-## html output    
-layout_file       = SCRIPTDIR + "etc/layout.html.erb"
-body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.md.erb"
-report_file       = "#{qadir}/02_PreProcessed_#{SCRIPTNAME}.html"
-@body             = ""
-
-exit 2 if any_inputs_dont_exist_including qadir, preprocdir
+standard    = "#{ENV['FSLDIR']}/data/standard/MNI152_T1_#{resolution}mm_brain.nii.gz"
 
 # Loop through each subject
 subjects.each do |subject|
@@ -59,7 +50,6 @@ subjects.each do |subject|
   anatdir       = "#{preprocdir}/#{subject}/anat"
   
   puts "\n== Setting input variables".magenta
-  standard      = "#{ENV['FSLDIR']}/data/standard/MNI152_T1_#{resolution}mm_brain.nii.gz"
   brain         = "#{anatdir}/brain.nii.gz"
   gm            = "#{anatdir}/segment/fast_pve_1.nii.gz"
   

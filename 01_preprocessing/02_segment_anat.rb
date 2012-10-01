@@ -14,8 +14,9 @@ SCRIPTNAME  = Pathname.new(__FILE__).basename.sub_ext("")
 # add lib directory to ruby path
 $: << SCRIPTDIR + "lib" # will be scriptdir/lib
 
-require 'colorize'        # allows adding color to output
+require 'config.rb'       # globalish variables
 require 'for_commands.rb' # provides various function such as 'run'
+require 'colorize'        # allows adding color to output
 require 'erb'             # for interpreting erb to create report pages
 require 'trollop'
 
