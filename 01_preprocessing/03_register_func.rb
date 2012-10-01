@@ -54,7 +54,7 @@ body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.md.erb"
 report_file       = "#{qadir}/02_PreProcessed_#{SCRIPTNAME}.html"
 @body             = ""
 
-exit 2 if any_inputs_dont_exist_including qadir, origdir, preprocdir
+exit 2 if any_inputs_dont_exist_including qadir, preprocdir
 
 # Loop through each subject
 subjects.each do |subject|
@@ -80,9 +80,9 @@ subjects.each do |subject|
   puts "\n== Setting output variables".magenta
   example_func      = "#{funcdir}/func_mean.nii.gz"
   regdir            = "#{funcdir}/reg"
-  func2highres      = "#{regdir}/func2highres"
-  highres2func      = "#{regdir}/highres2func"
-  func2standard     = "#{regdir}/func2standard"
+  func2highres      = "#{regdir}/example_func2highres"
+  highres2func      = "#{regdir}/highres2example_func"
+  func2standard     = "#{regdir}/example_func2standard"
   
   puts "\n== Checking outputs".magenta
   next if any_outputs_exist_including example_func, regdir
@@ -97,6 +97,9 @@ subjects.each do |subject|
   puts "\n== Averaging mean EPIs".magenta
   run "3dTstat -mean -prefix #{example_func} #{funcdir}/tmp_means.nii.gz"
   run "rm #{funcdir}/tmp_means.nii.gz"
+  
+  puts "\n== Linking example functional".magenta
+  run "ln -s #{example_func} #{regdir}/example_func.nii.gz"
   
   puts "\n== Initial coregistration using flirt EPI => T1".magenta
   run "flirt -in #{example_func} -ref #{highres} -dof 6 \
