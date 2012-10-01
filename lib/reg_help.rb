@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 require 'colorize'
 require 'pathname'
 require './for_commands.rb'
