@@ -1,4 +1,4 @@
-require './for_commands.rb'
+require 'for_commands.rb'
 
 # Set paths
 ENV['BASEDIR']  ||= "/home/data/"
