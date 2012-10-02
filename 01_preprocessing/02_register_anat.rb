@@ -47,14 +47,15 @@ standard    = "#{ENV['FSLDIR']}/data/standard/MNI152_T1_#{resolution}mm_brain.ni
 subjects.each do |subject|
   puts "\n= Subject: #{subject} \n".white.on_blue
   
-  anatdir       = "#{preprocdir}/#{subject}/anat"
+  anatdir       = "#{@preprocdir}/#{subject}/anat"
   
   puts "\n== Setting input variables".magenta
   brain         = "#{anatdir}/brain.nii.gz"
+  head          = "#{anatdir}/head.nii.gz"
   gm            = "#{anatdir}/segment/fast_pve_1.nii.gz"
   
   puts "\n== Checking inputs".magenta
-  next if any_inputs_dont_exist_including standard, brain
+  next if any_inputs_dont_exist_including standard, brain, head
   
   puts "\n== Setting output variables".magenta
   regdir        = "#{anatdir}/reg"
