@@ -41,7 +41,7 @@ subjects    = opts[:subjects]
 # html output    
 layout_file       = SCRIPTDIR + "etc/layout.html.erb"
 body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.md.erb"
-report_file       = "#{qadir}/01_PreProcessed_#{SCRIPTNAME}.html"
+report_file       = "#{@qadir}/01_PreProcessed_#{SCRIPTNAME}.html"
 @body             = ""
 
 # Loop through each subject
@@ -49,7 +49,7 @@ subjects.each do |subject|
   puts "\n= Subject: #{subject} \n".white.on_blue
   
   puts "\n== Setting input variables".magenta
-  in_subdir       = "#{origdir}/#{subject}"
+  in_subdir       = "#{@origdir}/#{subject}"
   originals       = runs.collect{|run| "#{in_subdir}/anat#{run}/mprage.nii.gz"}
   fixed_originals = originals.collect{|orig| "#{orig.rmext}_tmpfix.nii.gz" }
   
@@ -57,8 +57,8 @@ subjects.each do |subject|
   next if any_inputs_dont_exist_including freesurferdir, *originals
   
   puts "\n== Setting output variables".magenta
-  out_subdir      = "#{preprocdir}/#{subject}"
-  mridir          = "#{freesurferdir}/#{subject}/mri"
+  out_subdir      = "#{@preprocdir}/#{subject}"
+  mridir          = "#{@freesurferdir}/#{subject}/mri"
   anatdir         = "#{out_subdir}/anat"
   head            = "#{anatdir}/head.nii.gz"
   brain           = "#{anatdir}/brain.nii.gz"
