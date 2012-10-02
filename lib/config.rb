@@ -10,7 +10,7 @@ ENV['BASEDIR']  ||= "/home/data/"
 @freesurferdir    = "#{@basedir}/Freesurfer/#{@study}"
 
 @TR               = 2.01
-@nslices          = 30
+@nslices          = 15
 @slice_pattern    = "alt+z2"
 
 exit 2 if any_inputs_dont_exist_including @origdir, @qadir, @preprocdir, 
