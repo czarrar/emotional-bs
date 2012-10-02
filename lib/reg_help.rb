@@ -1,6 +1,6 @@
 require 'colorize'
 require 'pathname'
-require './for_commands.rb'
+require 'for_commands.rb'
 
 def create_reg_pics(in_file, ref_file, out_file)
   
