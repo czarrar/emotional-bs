@@ -55,7 +55,7 @@ subjects.each do |subject|
   puts "\n= Subject #{subject}".white.on_blue
     
   puts "\n== Setting input variables".magenta
-  subdir        = "#{preprocdir}/#{subject}"
+  subdir        = "#{@preprocdir}/#{subject}"
   anatdir       = "#{subdir}/anat"
   funcdir       = "#{subdir}/#{scan}"
   regdir        = "#{funcdir}/reg"
@@ -133,9 +133,7 @@ subjects.each do |subject|
     wm_ts           = "#{nvrdir}/ts_wm.nii.gz"
     motion_friston  = "#{nvrdir}/ts_motion_friston.1D"
     func_denoise    = "#{rundir}/func_denoise.nii.gz"
-    func_filtered   = "#{rundir}/func_denoise+filt.nii.gz"
     func_smoothed   = "#{rundir}/func_denoise+smooth.nii.gz"
-    func_filtered_smoothed = "#{rundir}/func_denoise+filt+smooth.nii.gz"
     
     puts "\n=== Checking outputs".magenta
     next if any_outputs_exist_including csf_ts, wm_ts, motion_friston, 
@@ -205,21 +203,12 @@ subjects.each do |subject|
     puts "\n== Make sure the TR is correct".magenta
     run "3drefit -TR #{TR} #{func_denoise}"
     
-    # filter + smooth
-    
-    puts "\n== Filter the data".magenta
-    run "3dBandpass -nodetrend -mask #{func_mask} \
-          -band #{low_band} #{high_band} -prefix #{func_filtered} \
-          #{func_denoise}"
-  
-    puts "\n== Smoothing non-filtered data".magenta
+    # smooth
+      
+    puts "\n== Smoothing data".magenta
     run "3dBlurInMask -input #{func_denoise} -FWHM #{fwhm} \
           -mask #{func_mask} -prefix #{func_smoothed}"
-  
-    puts "\n== Smoothing filtered data".magenta
-    run "3dBlurInMask -input #{func_filtered} -FWHM #{fwhm} \
-          -mask #{func_mask} -prefix #{func_filtered_smoothed}"
-  
+    
   end
 end
 
