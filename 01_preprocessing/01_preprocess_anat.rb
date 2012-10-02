@@ -40,7 +40,7 @@ subjects    = opts[:subjects]
 
 # html output    
 layout_file       = SCRIPTDIR + "etc/layout.html.erb"
-body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.htm.erb"
+body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.html.erb"
 report_file       = "#{@qadir}/01_PreProcessed_#{SCRIPTNAME}.html"
 @body             = ""
 
