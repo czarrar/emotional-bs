@@ -35,30 +35,30 @@ subjects    = opts[:subjects]
 csf_thresh  = 0.5
 wm_thresh   = 0.5
 
-# Set paths
-basedir     = "/home/data/Projects/emotional-bs"
-preprocdir  = "#{basedir}/02_PreProcessed"
-
 # Loop through each subject
 subjects.each do |subject|
   puts "\n= Subject: #{subject} \n".white.on_blue
   
-  anatdir   = "#{preprocdir}/#{subject}/anat"
+  anatdir   = "#{@preprocdir}/#{subject}/anat"
   
   puts "\n== Setting input variables".magenta
-  brain     = "#{anatdir}/anat"
+  brain     = "#{anatdir}/brain.nii.gz"
   
   puts "\n== Checking inputs".magenta
   next if any_inputs_dont_exist_including brain
   
   puts "\n== Setting output variables".magenta
-  fast      = "#{anatdir}/segment/fast"
+  segdir    = "#{anatdir}/segment"
+  fast      = "#{segdir}/fast"
   csf_mask  = "#{anatdir}/csf_mask.nii.gz"
   wm_mask   = "#{anatdir}/wm_mask.nii.gz"
   wm_edge   = "#{anatdir}/wm_mask_edge.nii.gz"
     
   puts "\n== Checking outputs".magenta
   next if all_outputs_exist_including csf_mask, wm_mask, wm_edge
+  
+  puts "\n== Creating output directories (if needed)".magenta
+  Dir.mkdir segdir if not File.directory? segdir
   
   begin
   
