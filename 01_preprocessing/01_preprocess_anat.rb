@@ -93,7 +93,7 @@ subjects.each do |subject|
       end
       
       puts "\n== Using freesurfer for intensity normalization and skull stripping".magenta
-      run "recon-all -i %s -autorecon1 -s #{subject} -sd #{freesurferdir}" % fixed_originals.join(" -i ")
+      run "recon-all -i %s -autorecon1 -s #{subject} -sd #{@freesurferdir}" % fixed_originals.join(" -i ")
     end
     
     puts "\n== Converting freesurfer output to nifti format".magenta
