@@ -1,7 +1,7 @@
 require 'for_commands.rb'
 
 # Set paths
-ENV['BASEDIR']  ||= "/home/data/"
+ENV['BASEDIR']  ||= "/home/data"
 @basedir          = ENV['BASEDIR']
 @study            = "Emotional-BS"
 @origdir          = "#{@basedir}/Originals/#{@study}"

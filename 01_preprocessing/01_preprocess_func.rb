@@ -45,19 +45,19 @@ subjects.each do |subject|
   puts "= Subject: #{subject} \n".white.on_blue
     
   puts "\n== Setting input variables".magenta
-  in_subdir     = "#{origdir}/#{subject}"
+  in_subdir     = "#{@origdir}/#{subject}"
   
   puts "\n== Checking inputs".magenta
   next if any_inputs_dont_exist_including in_subdir
   
   puts "\n== Setting output variables".magenta
-  out_subdir    = "#{preprocdir}/#{subject}"
+  out_subdir    = "#{@preprocdir}/#{subject}"
     
   puts "\n== Creating output directories (if needed)".magenta
   Dir.mkdir out_subdir if not File.directory? out_subdir
   
   runs.each_with_index do |run, i|
-    puts "\n== Run #{run}"
+    puts "\n== Run #{run}".white.on_blue
     
     puts "\n=== Setting input variables".magenta
     in_rundir           = "#{in_subdir}/#{scan}#{run}"
@@ -67,10 +67,12 @@ subjects.each do |subject|
     next if any_inputs_dont_exist_including original    
     
     puts "\n=== Setting output variables".magenta
-    out_rundir          = "#{out_subdir}/#{scan}/run_%02d" % run
+    out_scandir         = "#{out_subdir}/#{scan}"
+    out_rundir          = "#{out_scandir}/run_%02d" % run
     ppdir               = "#{out_rundir}/01_preprocess"
     mcref               = "#{out_subdir}/#{scan}/run_01/func_ref.nii.gz"  # same across runs
     motion              = "#{out_rundir}/motion.1D"
+    motion_pic          = "#{out_rundir}/motion.png"
     abs_motion          = "#{out_rundir}/motion_absolute.1D"
     rel_motion          = "#{out_rundir}/motion_relative.1D"
     brain_mask          = "#{out_rundir}/func_mask.nii.gz"
@@ -80,9 +82,11 @@ subjects.each do |subject|
     mean                = "#{out_rundir}/func_mean.nii.gz"
     
     puts "\n== Checking outputs".magenta
-    next if all_outputs_exist_including csf_mask, wm_mask, wm_edge
+    next if all_outputs_exist_including mcref, motion, abs_motion, rel_motion, 
+                                        brain, brain_mask, mean
     
     puts "\n== Creating output directories (if needed)".magenta
+    Dir.mkdir out_scandir if not File.directory? out_scandir
     Dir.mkdir out_rundir if not File.directory? out_rundir
     Dir.mkdir ppdir if not File.directory? ppdir
     
@@ -91,8 +95,8 @@ subjects.each do |subject|
           -prefix #{ppdir}/01_exclude_tpts.nii.gz"
     
     puts "\n=== Performing slice time correction".magenta
-    run "3dTshift -TR #{TR} -slice #{nslices} -tpattern #{slice_pattern} \
-          -prefix #{ppdir}/02_slice_time.nii.gz"
+    run "3dTshift -TR #{@TR} -slice #{@nslices} -tpattern #{@slice_pattern} \
+          -prefix #{ppdir}/02_slice_time.nii.gz #{ppdir}/01_exclude_tpts.nii.gz"
     
     puts "\n=== Deobliquing to be AFNI friendly".magenta
     run "3dcopy #{ppdir}/02_slice_time.nii.gz #{ppdir}/03_deoblique.nii.gz"
@@ -105,7 +109,7 @@ subjects.each do |subject|
     if i == 0
       run "3dcalc -a #{ppdir}/04_reorient.nii.gz'[0]' -expr 'a' -prefix #{mcref}"
     else
-      run "ln -s #{mcref} #{rundir}/"
+      run "ln -s #{mcref} #{out_rundir}/"
     end
     
     puts "\n=== Motion correcting".magenta
@@ -128,7 +132,7 @@ subjects.each do |subject|
     
     puts "\n=== Creating pretty pictures".magenta
     run "slicer.py -w 5 -l 4 -s axial --overlay #{brain_mask} 1 1 -t #{mcref} #{brain_axial_pic}"
-    run "slicer.py -w 5 -l 4 -s sagittal --overlay #{brain_mask} 1 1 -t #{head} #{brain_sagittal_pic}"
+    run "slicer.py -w 5 -l 4 -s sagittal --overlay #{brain_mask} 1 1 -t #{mcref} #{brain_sagittal_pic}"
     
     puts "\n=== Applying mask to get only the brain".magenta
     run "3dcalc -a #{ppdir}/05_motion_correct.nii.gz -b #{brain_mask} \
