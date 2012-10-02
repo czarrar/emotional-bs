@@ -13,5 +13,5 @@ ENV['BASEDIR']  ||= "/home/data/"
 @nslices          = 30
 @slice_pattern    = "alt+z2"
 
-exit 2 if any_inputs_dont_exist_including origdir, qadir, preprocdir, 
-                                          freesurferdir
+exit 2 if any_inputs_dont_exist_including @origdir, @qadir, @preprocdir, 
+                                          @freesurferdir
