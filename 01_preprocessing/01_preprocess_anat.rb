@@ -71,7 +71,7 @@ subjects.each do |subject|
   puts "\n== Checking outputs".magenta
   next if all_outputs_exist_including head, brain, brain_mask
       
-  puts "\n== Creating output directories (if needed)"
+  puts "\n== Creating output directories (if needed)".magenta
   Dir.mkdir out_subdir if not File.directory? out_subdir
   Dir.mkdir anatdir if not File.directory? anatdir
   
