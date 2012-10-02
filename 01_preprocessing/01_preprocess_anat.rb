@@ -54,7 +54,7 @@ subjects.each do |subject|
   fixed_originals = originals.collect{|orig| "#{orig.rmext}_tmpfix.nii.gz" }
   
   puts "\n== Checking inputs".magenta
-  next if any_inputs_dont_exist_including freesurferdir, *originals
+  next if any_inputs_dont_exist_including *originals
   
   puts "\n== Setting output variables".magenta
   out_subdir      = "#{@preprocdir}/#{subject}"
