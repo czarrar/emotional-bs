@@ -99,10 +99,11 @@ subjects.each do |subject|
           --out=#{regprefix}.nii.gz"
     
     puts "\n=== Creating pretty pictures".magenta
-    create_reg_pics "#{regprefix}.nii.gz", standard, "#{regprefix}_flirt.png"
+    create_reg_pics "#{regprefix}.nii.gz", standard, "#{regprefix}_fnirt.png"
     
-    puts "\n== Linking standard brain".magenta
+    puts "\n== Linking standard brain and highres".magenta
     run "ln -s #{standard} #{regdir}/standard.nii.gz"
+    run "ln -s #{brain} #{regdir}/highres.nii.gz"
     
     puts "\n== Applying transform GM => Standard".magenta
     run "applywarp \

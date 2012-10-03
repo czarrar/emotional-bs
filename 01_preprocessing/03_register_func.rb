@@ -106,8 +106,9 @@ subjects.each do |subject|
   
   puts "\n== Linking registration output from T1 => Standard".magenta
   run "ln -s #{anat_regdir}/* #{regdir}/"
-  run "rm -f #{regdir}/standard.nii.gz"
+  run "rm -f #{regdir}/standard.nii.gz #{regdir}/highres.nii.gz"
   run "ln -s #{standard} #{regdir}/standard.nii.gz"
+  run "ln -s #{anatdir}/brain.nii.gz #{regdir}/highres.nii.gz"
   
   puts "\n== Invert transform to get T1 => EPI".magenta
   run "convert_xfm -omat #{highres2func}.mat -inverse #{func2highres}.mat"
