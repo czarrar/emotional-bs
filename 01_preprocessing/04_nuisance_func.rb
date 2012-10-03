@@ -97,7 +97,21 @@ subjects.each do |subject|
   run "3dcalc -a #{segdir}/csf_02_mask_thr+bin.nii.gz -b a+i -c a-i -d a+j \
         -e a-j -f a+k -g a-k -expr 'a*(1-amongst(0,b,c,d,e,f,g))' \
         -prefix #{segdir}/csf_03_mask_erode.nii.gz"
-  run "ln -s #{segdir}/csf_03_mask_erode.nii.gz #{csf}"
+  
+  puts "\n== Transforming CSF prior to T1 space at 2mm".magenta
+  run "flirt -in #{@priordir}/avg152T1_csf_bin.nii.gz \
+        -ref #{segdir}/csf_01_mask_unthr.nii.gz \
+        -out #{segdir}/csfprior_mask_unthr.nii.gz \
+        -applyxfm -init #{anatdir}/reg/standard2highres.mat"
+  run "3dcalc -a #{segdir}/csfprior_mask_unthr.nii.gz -expr 'step(a-0.5)' \
+        -prefix #{segdir}/csfprior_mask.nii.gz"
+  
+  puts "\n== Masking CSF mask by prior mask".magenta
+  run "3dcalc -a #{segdir}/csf_03_mask_erode.nii.gz \
+        -b #{segdir}/csfprior_mask.nii.gz -expr 'step(a)*step(b)' \
+        -prefix #{segdir}/csf_04_mask_prior.nii.gz"
+  
+  run "ln -s #{segdir}/csf_04_mask_prior.nii.gz #{csf}"
   
   # now we handle the WM file to get regressor for anaticorr
   # fractionize image to EPI space
