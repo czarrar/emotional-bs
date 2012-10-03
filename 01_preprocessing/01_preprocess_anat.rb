@@ -100,11 +100,12 @@ subjects.each do |subject|
     run "mri_convert #{mridir}/orig.mgz #{anatdir}/tmp_head.nii.gz"
     run "mri_convert #{mridir}/brainmask.mgz #{anatdir}/tmp_brain.nii.gz"
     
-    puts "\n== Reorienting head to be FSL friendly".magenta
+    puts "\n== Reorienting head and to be FSL friendly".magenta
     run "3dresample -orient RPI -inset #{anatdir}/tmp_head.nii.gz -prefix #{head}"
+    run "3dresample -orient RPI -inset #{anatdir}/tmp_brain.nii.gz -prefix #{anatdir}/tmp_brain_reorient.nii.gz"
     
     puts "\n== Generating brain mask and brain".magenta
-    run "3dcalc -a #{anatdir}/tmp_brain.nii.gz -expr 'step(a)' -prefix #{brain_mask}"
+    run "3dcalc -a #{anatdir}/tmp_brain_reorient.nii.gz -expr 'step(a)' -prefix #{brain_mask}"
     run "3dcalc -a #{head} -b #{brain_mask} -expr 'a*step(b)' -prefix #{brain}" 
     
     puts "\n== Creating pretty pictures".magenta
