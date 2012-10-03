@@ -47,11 +47,11 @@ resolution  = opts[:resolution]
 subjects.each do |subject|
   puts "= Subject: #{subject} \n".white.on_blue
   
-  anatdir           = "#{preprocdir}/#{subject}/anat"
-  funcdir           = "#{preprocdir}/#{subject}/#{scan}"
+  anatdir           = "#{@preprocdir}/#{subject}/anat"
+  funcdir           = "#{@preprocdir}/#{subject}/#{scan}"
   
   puts "\n== Setting input variables".magenta
-  rundirs           = runs.collect{|run| "#{funcdir}/run#{run}"}
+  rundirs           = runs.collect{|run| "#{funcdir}/run_%02d" % run}
   run_means         = rundirs.collect{|rundir| "#{rundir}/func_mean.nii.gz"}
   anat_regdir       = "#{anatdir}/reg"
   highres2standard  = "#{anat_regdir}/highres2standard"
@@ -72,7 +72,7 @@ subjects.each do |subject|
   func2standard     = "#{regdir}/example_func2standard"
   
   puts "\n== Checking outputs".magenta
-  next if any_outputs_exist_including example_func, regdir
+  next if all_outputs_exist_including example_func, regdir
       
   puts "\n== Creating output directories (if needed)".magenta
   Dir.mkdir regdir if not File.directory? regdir

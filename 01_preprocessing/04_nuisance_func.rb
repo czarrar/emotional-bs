@@ -76,7 +76,7 @@ subjects.each do |subject|
   func2highres  = "#{regdir}/example_func2highres"
       
   puts "\n=== Checking outputs".magenta
-  next if any_outputs_exist_including csf, wm, func2highres
+  next if all_outputs_exist_including csf, wm, func2highres
   
   puts "\n=== Creating output directories (if necessary)".magenta
   Dir.mkdir segdir if not File.directory? segdir
@@ -136,7 +136,7 @@ subjects.each do |subject|
     func_smoothed   = "#{rundir}/func_denoise+smooth.nii.gz"
     
     puts "\n=== Checking outputs".magenta
-    next if any_outputs_exist_including csf_ts, wm_ts, motion_friston, 
+    next if all_outputs_exist_including csf_ts, wm_ts, motion_friston, 
                                         func_denoise, func_filtered, 
                                         func_smoothed, func_filtered_smoothed
     

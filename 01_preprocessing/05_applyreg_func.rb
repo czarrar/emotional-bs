@@ -78,7 +78,7 @@ subjects.each do |subject|
     func_smoothed2std           = "#{rundir}/func_denoise+smooth2standard.nii.gz"
     
     puts "\n=== Checking outputs".magenta
-    next if any_outputs_exist_including func_denoise2std, func_smoothed2std, 
+    next if all_outputs_exist_including func_denoise2std, func_smoothed2std, 
                                         func_filtered2std, func_filtered_smoothed2std
     
     puts "\n=== Creating output directories (if necessary)".magenta
