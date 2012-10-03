@@ -1,5 +1,6 @@
 require 'colorize'
 require 'pathname'
+require 'tmpdir'
 require 'for_commands.rb'
 
 def create_reg_pics(in_file, ref_file, out_file)
@@ -8,7 +9,7 @@ def create_reg_pics(in_file, ref_file, out_file)
   
   in_file   = Pathname(in_file).realpath
   ref_file  = Pathname(ref_file).realpath
-  out_file  = Pathname(out_file).realpath
+  out_file  = out_file
   
   Dir.mktmpdir do |tmpdir|
     puts "=== Running commands in #{tmpdir}".magenta
