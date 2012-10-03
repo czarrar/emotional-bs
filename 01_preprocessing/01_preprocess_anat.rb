@@ -92,27 +92,27 @@ subjects.each do |subject|
         run "fslmaths #{originals[i]} #{fixed_originals[i]}"
       end
       
-      puts "\n== Using freesurfer for intensity normalization and skull stripping".magenta
+      puts "\n== Using freesurfer for skull stripping".magenta
       run "recon-all -i %s -autorecon1 -s #{subject} -sd #{@freesurferdir}" % fixed_originals.join(" -i ")
     end
     
     puts "\n== Converting freesurfer output to nifti format".magenta
-    run "mri_convert #{mridir}/T1.mgz #{anatdir}/tmp_head.nii.gz"
+    run "mri_convert #{mridir}/orig.mgz #{anatdir}/tmp_head.nii.gz"
     run "mri_convert #{mridir}/brainmask.mgz #{anatdir}/tmp_brain.nii.gz"
     
-    puts "\n== Reorienting head and brain to be FSL friendly".magenta
+    puts "\n== Reorienting head to be FSL friendly".magenta
     run "3dresample -orient RPI -inset #{anatdir}/tmp_head.nii.gz -prefix #{head}"
-    run "3dresample -orient RPI -inset #{anatdir}/tmp_brain.nii.gz -prefix #{brain}"
     
-    puts "\n== Generating brain mask".magenta
-    run "3dcalc -a #{brain} -expr 'step(a)' -prefix #{brain_mask}"
+    puts "\n== Generating brain mask and brain".magenta
+    run "3dcalc -a #{anatdir}/tmp_brain.nii.gz -expr 'step(a)' -prefix #{brain_mask}"
+    run "3dcalc -a #{head} -b #{brain_mask} -expr 'a*step(b)' -prefix #{brain}" 
     
     puts "\n== Creating pretty pictures".magenta
     run "slicer.py -w 5 -l 4 -s axial #{head} #{head_axial_pic}"
     run "slicer.py -w 5 -l 4 -s sagittal #{head} #{head_sagittal_pic}"
     run "slicer.py -w 5 -l 4 -s axial --overlay #{brain_mask} 1 1 -t #{head} #{brain_mask_axial_pic}"
     run "slicer.py -w 5 -l 4 -s sagittal --overlay #{brain_mask} 1 1 -t #{head} #{brain_mask_sagittal_pic}"
-        
+    
   ensure
     
     puts "\n== Removing intermediate files".magenta
