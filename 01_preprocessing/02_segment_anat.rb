@@ -32,8 +32,8 @@ end
 
 # Gather inputs
 subjects    = opts[:subjects]
-csf_thresh  = 0.5
-wm_thresh   = 0.5
+csf_thresh  = 0.95
+wm_thresh   = 0.95
 
 # Loop through each subject
 subjects.each do |subject|
@@ -63,14 +63,14 @@ subjects.each do |subject|
   begin
   
     puts "\n== Segmenting skullstripped anatomical".magenta
-    run "fast --channels=1 --type=1 --class=3 --out=#{fast} #{brain}"
+    run "fast -g -p -o #{fast} #{brain}"
     
     puts "\n== Thresholding CSF mask".magenta
-    run "3dcalc -a #{fast}_pve_0.nii.gz -expr 'step(a-%.4f)' \
+    run "3dcalc -a #{fast}_prob_0.nii.gz -expr 'step(a-%.4f)' \
           -prefix #{csf_mask} -datum short" % csf_thresh
     
     puts "\n== Thresholding WM mask".magenta
-    run "3dcalc -a #{fast}_pve_2.nii.gz -expr 'step(a-%.4f)' \
+    run "3dcalc -a #{fast}_prob_2.nii.gz -expr 'step(a-%.4f)' \
           -prefix #{wm_mask} -datum short" % wm_thresh
     
     puts "\n== Find edges of WM for evaluating segmentation and bbreg results".magenta
