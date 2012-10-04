@@ -30,12 +30,8 @@ p = Trollop::Parser.new do
   opt :name, "Name of scan (movie or rest)", :type => :string, :required => true
   opt :runs, "Which runs to process", :type => :ints, :required => true
   opt :subjects, "Which subjects to process", :type => :strings, :required => true
-  opt :low_band, "Low end of band-pass filter", :type => :float, 
-    :default => 0
-  opt :high_band, "High end of band-pass filter", :type => :float, :default => 999
   opt :fwhm, "FWHM for spatial smoothing", :type => :int, :default => 6
-  opt :wm_radius, "Radius for detecting WM voxels when doing anaticor", 
-    :type => :int, :default => 30
+  opt :wm_radius, "Radius for detecting WM voxels when doing anaticor", :type => :int, :default => 30
 end
 opts = Trollop::with_standard_exception_handling p do
   raise Trollop::HelpNeeded if ARGV.empty? # show help screen
@@ -46,8 +42,6 @@ end
 scan        = opts[:name]
 runs        = opts[:runs]
 subjects    = opts[:subjects]
-low_bad     = opts[:low_band]
-high_band   = opts[:high_band]
 fwhm        = opts[:fwhm]
 wm_radius   = opts[:wm_radius]
 
@@ -62,12 +56,11 @@ subjects.each do |subject|
   csf_mask      = "#{anatdir}/csf_mask.nii.gz"
   wm_mask       = "#{anatdir}/wm_mask.nii.gz"
   func_mean     = "#{funcdir}/func_mean.nii.gz"
-  func_mask     = "#{funcdir}/func_mask.nii.gz"
   highres2func  = "#{regdir}/highres2example_func"
       
   puts "\n== Checking inputs".magenta
   next if any_inputs_dont_exist_including csf_mask, wm_mask, func_mean, 
-                                          func_mask, "#{highres2func}.mat"
+                                          "#{highres2func}.mat"
     
   puts "\n== Setting output variables".magenta
   segdir        = "#{funcdir}/segment"
@@ -136,6 +129,7 @@ subjects.each do |subject|
     puts "\n=== Setting input variables".magenta
     rundir          = "#{funcdir}/run_%02d" % run
     func            = "#{rundir}/func_brain.nii.gz"
+    func_mask       = "#{rundir}/func_mask.nii.gz"
     motion          = "#{rundir}/motion.1D"
     
     puts "\nChecking inputs".magenta
