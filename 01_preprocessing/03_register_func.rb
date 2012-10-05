@@ -70,6 +70,7 @@ subjects.each do |subject|
   func2highres      = "#{regdir}/example_func2highres"
   highres2func      = "#{regdir}/highres2example_func"
   func2standard     = "#{regdir}/example_func2standard"
+  standard2func     = "#{regdir}/standard2example_func"
   
   puts "\n== Checking outputs".magenta
   next if all_outputs_exist_including example_func, regdir
@@ -120,8 +121,8 @@ subjects.each do |subject|
   puts "\n== Invert transform to get Standard => EPI".magenta
   run "convert_xfm -omat #{standard2func}.mat -inverse #{func2standard}.mat"
   
-  puts "\n== Apply transform to get EPI => Standard"
-  run "applyxfm -i #{example_fun} -r #{standard} -o #{func2standard}.nii.gz \
+  puts "\n== Apply transform to get EPI => Standard".magenta
+  run "applywarp -i #{example_func} -r #{standard} -o #{func2standard}.nii.gz \
         -w #{highres2standard}_warp.nii.gz --premat=#{func2highres}.mat"
   
   puts "\n=== Creating pretty pictures".magenta
