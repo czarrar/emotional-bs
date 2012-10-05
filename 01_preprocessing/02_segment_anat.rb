@@ -76,6 +76,10 @@ subjects.each do |subject|
     puts "\n== Find edges of WM for evaluating segmentation and bbreg results".magenta
     run "fslmaths #{wm_mask} -edge -bin -mas #{wm_mask} #{wm_edge}"
     
+    puts "\n== Taking pretty pictures".magenta
+    run "slicer.py -w 5 -l 4 -s axial --overlay #{csf_mask} 1 1 #{brain} #{csf_mask.rmext}_pic.png"
+    run "slicer.py -w 5 -l 4 -s axial --overlay #{wm_mask} 1 1 #{brain} #{wm_mask.rmext}_pic.png"
+    
   ensure
     
     puts "\n== doing good".magenta
