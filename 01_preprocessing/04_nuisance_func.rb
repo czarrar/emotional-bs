@@ -70,7 +70,7 @@ subjects.each do |subject|
   wm            = "#{segdir}/wm_mask.nii.gz"
       
   puts "\n=== Checking outputs".magenta
-  next if all_outputs_exist_including csf, wm, func2highres
+  #next if all_outputs_exist_including csf, wm
   
   puts "\n=== Creating output directories (if necessary)".magenta
   Dir.mkdir segdir if not File.directory? segdir
@@ -146,7 +146,7 @@ subjects.each do |subject|
     motion          = "#{rundir}/motion.1D"
     
     puts "\nChecking inputs".magenta
-    next if any_inputs_dont_exist_including func, motion
+    next if any_inputs_dont_exist_including func, motion, csf, wm
     
     puts "\n=== Setting output variables".magenta
     nvrdir          = "#{rundir}/02_nuisance"
@@ -216,7 +216,7 @@ subjects.each do |subject|
           -polort #{polort} #{nvrdir}/wm_04_local_ts.nii.gz"
     
     puts "\n== Getting average WM time-series for visualization".magenta
-    run "3dmaskave -q -mask #{func_brain} #{nvrdir}/wm_04_local_ts.nii.gz \
+    run "3dmaskave -q -mask #{func_mask} #{nvrdir}/wm_04_local_ts.nii.gz \
           > #{nvrdir}/ts_wm.1D"
     
     puts "\n== Creating pretty picture".magenta

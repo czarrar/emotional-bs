@@ -55,7 +55,7 @@ subjects.each do |subject|
   subdir        = "#{@preprocdir}/#{subject}"
   funcdir       = "#{subdir}/#{scan}"
   regdir        = "#{funcdir}/reg"
-  func2highres  = "#{regdir}/func2highres"
+  func2highres  = "#{regdir}/example_func2highres"
   warp          = "#{regdir}/highres2standard_warp.nii.gz"
   
   puts "\n== Checking inputs".magenta
@@ -66,24 +66,19 @@ subjects.each do |subject|
     puts "\n== Run #{run}".white.on_blue
     
     puts "\n=== Setting input variables".magenta
-    rundir          = "#{funcdir}/run_%02d" % run
-    func_denoise    = "#{rundir}/func_dnoise.nii.gz"
-    func_filtered   = "#{rundir}/func_denoise+filt.nii.gz"
+    rundir            = "#{funcdir}/run_%02d" % run
+    func_denoise      = "#{rundir}/func_denoise.nii.gz"
     
     puts "\nChecking inputs".magenta
-    next if any_inputs_dont_exist_including func_denoise, func_filtered
+    next if any_inputs_dont_exist_including func_denoise
     
     puts "\n=== Setting output variables".magenta
-    func_denoise2stsd           = "#{rundir}/func_denoise2standard.nii.gz"
-    func_smoothed2std           = "#{rundir}/func_denoise+smooth2standard.nii.gz"
+    func_denoise2std  = "#{rundir}/func_denoise2standard.nii.gz"
+    func_smoothed2std = "#{rundir}/func_denoise+smooth2standard.nii.gz"
     
     puts "\n=== Checking outputs".magenta
-    next if all_outputs_exist_including func_denoise2std, func_smoothed2std, 
-                                        func_filtered2std, func_filtered_smoothed2std
-    
-    puts "\n=== Creating output directories (if necessary)".magenta
-    Dir.mkdir nvrdir if not File.directory? nvrdir
-    
+    next if all_outputs_exist_including func_denoise2std, func_smoothed2std
+        
     puts "\n=== Transforming EPIs => Standard".magenta
     run "applywarp --in=#{func_denoise} \
           --ref=#{standard} \
