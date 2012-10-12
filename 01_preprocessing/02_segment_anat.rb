@@ -35,6 +35,12 @@ subjects    = opts[:subjects]
 csf_thresh  = 0.95
 wm_thresh   = 0.95
 
+# html output    
+layout_file       = SCRIPTDIR + "etc/layout.html.erb"
+body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.html.erb"
+report_file       = "#{@qadir}/01_PreProcessed_#{SCRIPTNAME}.html"
+@body             = ""
+
 # Loop through each subject
 subjects.each do |subject|
   puts "\n= Subject: #{subject} \n".white.on_blue
@@ -53,7 +59,15 @@ subjects.each do |subject|
   csf_mask  = "#{anatdir}/csf_mask.nii.gz"
   wm_mask   = "#{anatdir}/wm_mask.nii.gz"
   wm_edge   = "#{anatdir}/wm_mask_edge.nii.gz"
-    
+  
+  puts "\n== TEMP".magenta
+  run "slicer.py -w 5 -l 4 -s axial --overlay #{wm_edge} 1 1 #{brain} #{wm_edge.rmext}_pic.png"
+  
+  puts "\n== Saving contents for report page".magenta
+  text      = File.open(body_file).read
+  erbified  = ERB.new(text).result(binding)
+  @body    += "\n #{erbified} \n"
+  
   puts "\n== Checking outputs".magenta
   next if all_outputs_exist_including csf_mask, wm_mask, wm_edge
   
@@ -79,6 +93,7 @@ subjects.each do |subject|
     puts "\n== Taking pretty pictures".magenta
     run "slicer.py -w 5 -l 4 -s axial --overlay #{csf_mask} 1 1 #{brain} #{csf_mask.rmext}_pic.png"
     run "slicer.py -w 5 -l 4 -s axial --overlay #{wm_mask} 1 1 #{brain} #{wm_mask.rmext}_pic.png"
+    run "slicer.py -w 5 -l 4 -s axial --overlay #{wm_edge} 1 1 #{brain} #{wm_edge.rmext}_pic.png"
     
   ensure
     
@@ -89,6 +104,17 @@ subjects.each do |subject|
   end
   
 end
+
+@title          = "Anatomical Segmentation"
+@nav_title      = @title
+@dropdown_title = "Subjects"
+@dropdown_elems = subjects
+@foundation     = SCRIPTDIR + "lib/foundation"
+
+puts "\n= Compiling and writing report page to %s".magenta % report_file
+text      = File.open(layout_file).read
+erbified  = ERB.new(text).result(binding)
+File.open(report_file, 'w') { |file| file.write(erbified) }
 
 
 

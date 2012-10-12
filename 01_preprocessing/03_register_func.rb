@@ -43,6 +43,12 @@ runs        = opts[:runs]
 subjects    = opts[:subjects]
 resolution  = opts[:resolution]
 
+# html output    
+layout_file       = SCRIPTDIR + "etc/layout.html.erb"
+body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.html.erb"
+report_file       = "#{@qadir}/01_PreProcessed_#{SCRIPTNAME}.html"
+@body             = ""
+
 # Loop through each subject
 subjects.each do |subject|
   puts "= Subject: #{subject} \n".white.on_blue
@@ -71,6 +77,14 @@ subjects.each do |subject|
   highres2func      = "#{regdir}/highres2example_func"
   func2standard     = "#{regdir}/example_func2standard"
   standard2func     = "#{regdir}/standard2example_func"
+  
+  puts "\n== TEMP".magenta
+  create_reg_pics "#{func2standard}.nii.gz", standard, "#{func2standard}.png"
+  
+  puts "\n== Saving contents for report page".magenta
+  text      = File.open(body_file).read
+  erbified  = ERB.new(text).result(binding)
+  @body    += "\n #{erbified} \n"
   
   puts "\n== Checking outputs".magenta
   next if all_outputs_exist_including example_func, regdir
@@ -126,9 +140,20 @@ subjects.each do |subject|
         -w #{highres2standard}_warp.nii.gz --premat=#{func2highres}.mat"
   
   puts "\n=== Creating pretty pictures".magenta
-  create_reg_pics "#{func2highres}.nii.gz", highres, "#{func2highres}.png"
+  create_reg_pics "#{func2standard}.nii.gz", standard, "#{func2standard}.png"
   
   puts "\n=== Linking registration directory to individual runs".magenta
   rundirs.each{|rundir| run "ln -s #{regdir} #{rundir}/reg"}
   
 end
+
+@title          = "Functional Registration"
+@nav_title      = @title
+@dropdown_title = "Subjects"
+@dropdown_elems = subjects
+@foundation     = SCRIPTDIR + "lib/foundation"
+
+puts "\n= Compiling and writing report page to %s".magenta % report_file
+text      = File.open(layout_file).read
+erbified  = ERB.new(text).result(binding)
+File.open(report_file, 'w') { |file| file.write(erbified) }

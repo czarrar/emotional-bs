@@ -68,18 +68,18 @@ subjects.each do |subject|
   brain_mask_axial_pic    = "#{brain_mask.rmext}_axial_pic.png"
   brain_mask_sagittal_pic = "#{brain_mask.rmext}_sagittal_pic.png"
   
+  puts "\n== Saving contents for report page".magenta
+  text      = File.open(body_file).read
+  erbified  = ERB.new(text).result(binding)
+  @body    += "\n #{erbified} \n"
+  
   puts "\n== Checking outputs".magenta
   next if all_outputs_exist_including head, brain, brain_mask
       
   puts "\n== Creating output directories (if needed)".magenta
   Dir.mkdir out_subdir if not File.directory? out_subdir
   Dir.mkdir anatdir if not File.directory? anatdir
-  
-  puts "\n== Saving contents for report page".magenta
-  text      = File.open(body_file).read
-  erbified  = ERB.new(text).result(binding)
-  @body    += "\n #{erbified} \n"
-  
+    
   begin
     
     if File.exists? "#{mridir}/T1.mgz" and File.exists? "#{mridir}/brainmask.mgz"

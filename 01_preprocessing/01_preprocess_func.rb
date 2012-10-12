@@ -40,6 +40,12 @@ scan        = opts[:name]
 runs        = opts[:runs]
 subjects    = opts[:subjects]
 
+# html output    
+layout_file       = SCRIPTDIR + "etc/layout.html.erb"
+body_file         = SCRIPTDIR + "etc/01_preprocessing/#{SCRIPTNAME}.html.erb"
+report_file       = "#{@qadir}/01_PreProcessed_#{SCRIPTNAME}.html"
+@body             = ""
+
 # Loop through each subject
 subjects.each do |subject|
   puts "= Subject: #{subject} \n".white.on_blue
@@ -80,6 +86,11 @@ subjects.each do |subject|
     brain_sagittal_pic  = "#{out_rundir}/func_brain_mask_sagittal.png"
     brain               = "#{out_rundir}/func_brain.nii.gz"
     mean                = "#{out_rundir}/func_mean.nii.gz"
+    
+    puts "\n== Saving contents for report page".magenta
+    text      = File.open(body_file).read
+    erbified  = ERB.new(text).result(binding)
+    @body    += "\n #{erbified} \n"
     
     puts "\n== Checking outputs".magenta
     next if all_outputs_exist_including mcref, motion, abs_motion, rel_motion, 
@@ -144,3 +155,15 @@ subjects.each do |subject|
   end
     
 end
+
+@title          = "Functional Preprocessing"
+@nav_title      = @title
+@dropdown_title = "Subjects"
+@dropdown_elems = subjects
+@foundation     = SCRIPTDIR + "lib/foundation"
+
+puts "\n= Compiling and writing report page to %s".magenta % report_file
+text      = File.open(layout_file).read
+erbified  = ERB.new(text).result(binding)
+File.open(report_file, 'w') { |file| file.write(erbified) }
+
