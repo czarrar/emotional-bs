@@ -1,0 +1,5 @@
+Site,Scan,TR (seconds),Reference,Acquisition,FirstTR (start volume index),LastTR (final volume index)
+Emotional-BS,movie1,2.01,15,alt+z2,0,None
+Emotional-BS,movie2,2.01,15,alt+z2,0,None
+Emotional-BS,movie3,2.01,15,alt+z2,0,None
+Emotional-BS,rest1,2.01,15,alt+z2,0,None
