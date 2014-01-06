@@ -1,0 +1,14 @@
+anatomicalTemplate  :  /home2/data/Originals/%s/%s/*/mprage.nii.gz 
+
+functionalTemplate  :  /home2/data/Originals/%s/%s/*/func.nii.gz 
+
+subjectList  :  None
+
+exclusionSubjectList  :  None 
+
+siteList  :  ['Emotional-BS']
+
+scanParametersCSV  :  /home2/data/Projects/Emotional-BS/share/10_preprocessing/10_setup/slice_timing_parameters.csv 
+
+outputSubjectListLocation  :  /home2/data/Projects/Emotional-BS/share/10_preprocessing/10_setup
+

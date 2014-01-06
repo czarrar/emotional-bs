@@ -1,0 +1,80 @@
+DEBUG 2013-10-31 00:13:15,718 357 extracting data for subject: BJKT110406
+DEBUG 2013-10-31 00:13:15,718 336 No sessions
+DEBUG 2013-10-31 00:13:15,721 248 site for sub BJKT110406 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,721 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,721 357 extracting data for subject: DA5T110329
+DEBUG 2013-10-31 00:13:15,721 336 No sessions
+DEBUG 2013-10-31 00:13:15,725 248 site for sub DA5T110329 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,726 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,726 357 extracting data for subject: DM5T110407
+DEBUG 2013-10-31 00:13:15,726 336 No sessions
+DEBUG 2013-10-31 00:13:15,728 248 site for sub DM5T110407 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,728 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,729 357 extracting data for subject: GSDT110404
+DEBUG 2013-10-31 00:13:15,729 336 No sessions
+DEBUG 2013-10-31 00:13:15,731 248 site for sub GSDT110404 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,731 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,731 357 extracting data for subject: HMMT110330
+DEBUG 2013-10-31 00:13:15,731 336 No sessions
+DEBUG 2013-10-31 00:13:15,748 248 site for sub HMMT110330 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,748 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,748 357 extracting data for subject: HR8T110329
+DEBUG 2013-10-31 00:13:15,748 336 No sessions
+DEBUG 2013-10-31 00:13:15,756 248 site for sub HR8T110329 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,756 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,756 357 extracting data for subject: JA3T110401
+DEBUG 2013-10-31 00:13:15,756 336 No sessions
+DEBUG 2013-10-31 00:13:15,759 248 site for sub JA3T110401 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,759 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,759 357 extracting data for subject: JR1T110330
+DEBUG 2013-10-31 00:13:15,760 336 No sessions
+DEBUG 2013-10-31 00:13:15,764 248 site for sub JR1T110330 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,764 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,764 357 extracting data for subject: MMKT110405
+DEBUG 2013-10-31 00:13:15,765 336 No sessions
+DEBUG 2013-10-31 00:13:15,768 248 site for sub MMKT110405 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,768 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,768 357 extracting data for subject: MSET110404
+DEBUG 2013-10-31 00:13:15,768 336 No sessions
+DEBUG 2013-10-31 00:13:15,771 248 site for sub MSET110404 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,771 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,771 357 extracting data for subject: RF5T110404
+DEBUG 2013-10-31 00:13:15,771 336 No sessions
+DEBUG 2013-10-31 00:13:15,774 248 site for sub RF5T110404 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,774 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,775 357 extracting data for subject: RK5T110329
+DEBUG 2013-10-31 00:13:15,775 336 No sessions
+DEBUG 2013-10-31 00:13:15,784 248 site for sub RK5T110329 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,784 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,784 357 extracting data for subject: SAVT110401
+DEBUG 2013-10-31 00:13:15,784 336 No sessions
+DEBUG 2013-10-31 00:13:15,787 248 site for sub SAVT110401 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,788 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,788 357 extracting data for subject: TA8T110407
+DEBUG 2013-10-31 00:13:15,788 336 No sessions
+DEBUG 2013-10-31 00:13:15,791 248 site for sub TA8T110407 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,791 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,791 357 extracting data for subject: TM6T110328
+DEBUG 2013-10-31 00:13:15,791 336 No sessions
+DEBUG 2013-10-31 00:13:15,797 248 site for sub TM6T110328 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,797 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,797 357 extracting data for subject: TS8T110405
+DEBUG 2013-10-31 00:13:15,797 336 No sessions
+DEBUG 2013-10-31 00:13:15,800 248 site for sub TS8T110405 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,800 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,800 357 extracting data for subject: VA5T110407
+DEBUG 2013-10-31 00:13:15,800 336 No sessions
+DEBUG 2013-10-31 00:13:15,803 248 site for sub VA5T110407 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,803 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,803 357 extracting data for subject: WJ4T110401
+DEBUG 2013-10-31 00:13:15,803 336 No sessions
+DEBUG 2013-10-31 00:13:15,806 248 site for sub WJ4T110401 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,806 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,806 357 extracting data for subject: WM8T110405
+DEBUG 2013-10-31 00:13:15,806 336 No sessions
+DEBUG 2013-10-31 00:13:15,809 248 site for sub WM8T110405 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,809 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
+DEBUG 2013-10-31 00:13:15,809 357 extracting data for subject: WSFT110406
+DEBUG 2013-10-31 00:13:15,809 336 No sessions
+DEBUG 2013-10-31 00:13:15,812 248 site for sub WSFT110406 -> Emotional-BS
+DEBUG 2013-10-31 00:13:15,812 249 scan parameters for the above site ['alt+z2', '0', 'None', '15', '2.01']
