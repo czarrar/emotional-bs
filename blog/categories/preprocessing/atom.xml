@@ -4,7 +4,7 @@
   <title><![CDATA[Category: preprocessing | Emotional BS]]></title>
   <link href="http://czarrar.github.io/emotional-bs/blog/categories/preprocessing/atom.xml" rel="self"/>
   <link href="http://czarrar.github.io/emotional-bs/"/>
-  <updated>2014-01-07T15:33:05-05:00</updated>
+  <updated>2014-01-07T15:42:07-05:00</updated>
   <id>http://czarrar.github.io/emotional-bs/</id>
   <author>
     <name><![CDATA[Zarrar Shehzad]]></name>
@@ -18,7 +18,7 @@
     <link href="http://czarrar.github.io/emotional-bs/blog/2014/01/07/preprocessing/"/>
     <updated>2014-01-07T14:44:48-05:00</updated>
     <id>http://czarrar.github.io/emotional-bs/blog/2014/01/07/preprocessing</id>
-    <content type="html"><![CDATA[<p>I ran the preprocessing with this dataset. The full config file can be seen here [todo]. The output can be found in <code>/home2/data/Projects/Emotional-BS/processed_data</code>. The working directories were unfortunately removed due to being run on gelert so you can’t regenerate certain things in a flash.</p>
+    <content type="html"><![CDATA[<p>I ran the preprocessing with this dataset. The full config file can be seen here: (https://github.com/czarrar/emotional-bs/blob/master/10_preprocessing/20_run/run_config.yaml)[https://github.com/czarrar/emotional-bs/blob/master/10_preprocessing/20_run/run_config.yaml]. The output can be found in <code>/home2/data/Projects/Emotional-BS/processed_data</code>. The working directories were unfortunately removed due to being run on gelert so you can’t regenerate certain things in a flash.</p>
 
 <p>Here are some relevant preprocessing decisions:</p>
 
