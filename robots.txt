@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://czarrar.github.io/emotional-bs/sitemap.xml 

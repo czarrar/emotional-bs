@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Emotional BS]]></title>
+  <link href="http://czarrar.github.io/emotional-bs/atom.xml" rel="self"/>
+  <link href="http://czarrar.github.io/emotional-bs/"/>
+  <updated>2014-01-07T14:40:57-05:00</updated>
+  <id>http://czarrar.github.io/emotional-bs/</id>
+  <author>
+    <name><![CDATA[Zarrar Shehzad]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+</feed>
