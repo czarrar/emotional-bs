@@ -81,6 +81,90 @@
 <div class="blog-index">
   
   
+  
+    <article>
+      
+
+  <div class="row-fluid">
+    <div class="span2 post-meta">
+	  <h5 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2014-01-07T14:44:48-05:00" pubdate data-updated="true">Jan 7<span>th</span>, 2014</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/emotional-bs/blog/categories/emobs/"><span class="badge">emobs</span></a>
+          
+          <a href="/emotional-bs/blog/categories/preprocessing/"><span class="badge">preprocessing</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10 post-container">
+      <h1 class="link"><a href="/emotional-bs/blog/2014/01/07/preprocessing/">Preprocessing</a></h1>
+      <p>I ran the preprocessing with this dataset. The full config file can be seen here [todo]. The output can be found in <code>/home2/data/Projects/Emotional-BS/processed_data</code>. The working directories were unfortunately removed due to being run on gelert so you can’t regenerate certain things in a flash.</p>
+
+<p>Here are some relevant preprocessing decisions:</p>
+
+<ul>
+  <li>I used bbreg</li>
+  <li>Anatomical -&gt; Standard registration was done with ANTs</li>
+  <li>The functional data were registered to 2mm standard space</li>
+  <li>I applied two types of correction strategies (basically compcor with and without global):
+    <ul>
+      <li>compcor+motion+linear+quadratic</li>
+      <li>compcor+global+motion+linear+quadratic</li>
+    </ul>
+  </li>
+  <li>Bandpass filtering of 0.01-0.1Hz was or wasn’t applied</li>
+</ul>
+
+<p>I’m thinking for the actual analysis, I’ll use the non-filtered data. Since some of this is also task data, I should have possibly only used a high pass filter.</p>
+
+<h2 id="roi-time-series">ROI Time-Series</h2>
+
+<p>I also extracted the time-series from several sets of parcellations:</p>
+
+<ul>
+  <li>AAL (anatomical)</li>
+  <li>CC200 (functional)</li>
+  <li>CC400 (functional)</li>
+  <li>EZ (anatomical)</li>
+  <li>HO (anatomical)</li>
+  <li>TT (anatomical)</li>
+  <li>ROIs from some paper (functional)</li>
+</ul>
+
+<p>Since these masks are actually in 3mm space, the data was likely resampled so it is really unclear why I set the data to be registered to 2mm standard space.</p>
+
+<h2 id="dual-regression">Dual Regression</h2>
+
+<p>I used some ICA components and applied dual regression to them. These components can be found at <code>/home2/data/Projects/ABIDE_Initiative/CPAC/abide/templates/3mm_for_dualreg/PNAS_Smith09_rsn10.nii</code>.</p>
+
+
+      
+      
+    </div>
+  </div>
+
+
+
+    </article>
+    
+  
   <div class="pagination">
     
 
