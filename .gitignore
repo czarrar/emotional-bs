@@ -59,3 +59,8 @@ doc/
 *.swp
 *.lock
 profile
+
+
+####
+# Personal
+cluster_temp_files
